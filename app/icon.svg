@@ -1,0 +1,35 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgCream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBF3E1"/>
+      <stop offset="100%" stop-color="#F3EAD6"/>
+    </linearGradient>
+    <linearGradient id="woodGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DDA24F"/>
+      <stop offset="100%" stop-color="#C9922E"/>
+    </linearGradient>
+    <linearGradient id="heartRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E85B4E"/>
+      <stop offset="100%" stop-color="#B5502E"/>
+    </linearGradient>
+    <clipPath id="squircleCH">
+      <rect x="0" y="0" width="512" height="512" rx="114" ry="114"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" fill="url(#bgCream)" clip-path="url(#squircleCH)"/>
+
+  <rect x="230" y="150" width="52" height="230" rx="20" fill="url(#woodGold)"/>
+  <rect x="166" y="222" width="180" height="52" rx="20" fill="url(#woodGold)"/>
+
+  <path d="M256,268
+           C256,250 232,236 214,250
+           C198,262 198,284 214,300
+           L256,338 L298,300
+           C314,284 314,262 298,250
+           C280,236 256,250 256,268 Z"
+        fill="url(#heartRed)"/>
+
+  <path d="M356,150 L361,163 L374,168 L361,173 L356,186 L351,173 L338,168 L351,163 Z" fill="#C9922E"/>
+  <path d="M170,150 L173,159 L182,162 L173,165 L170,174 L167,165 L158,162 L167,159 Z" fill="#C9922E"/>
+</svg>

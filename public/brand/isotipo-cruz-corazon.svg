@@ -1,0 +1,59 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgCream" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FBF3E1"/>
+      <stop offset="100%" stop-color="#F3EAD6"/>
+    </linearGradient>
+    <linearGradient id="woodGold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#DDA24F"/>
+      <stop offset="100%" stop-color="#C9922E"/>
+    </linearGradient>
+    <linearGradient id="heartRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#E85B4E"/>
+      <stop offset="100%" stop-color="#C43D3D"/>
+    </linearGradient>
+    <clipPath id="squircleCH">
+      <rect x="0" y="0" width="512" height="512" rx="114" ry="114"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" fill="url(#bgCream)" clip-path="url(#squircleCH)"/>
+
+  <!-- cross: rounded plank, wood/gold tone, matching the reference -->
+  <g>
+    <rect x="230" y="150" width="52" height="230" rx="20" fill="url(#woodGold)"/>
+    <rect x="166" y="222" width="180" height="52" rx="20" fill="url(#woodGold)"/>
+  </g>
+
+  <!-- heart at the junction -->
+  <path d="M256,268
+           C256,250 232,236 214,250
+           C198,262 198,284 214,300
+           L256,338 L298,300
+           C314,284 314,262 298,250
+           C280,236 256,250 256,268 Z"
+        fill="url(#heartRed)" id="ch-heart"/>
+
+  <!-- sparkles -->
+  <path id="ch-spark-1" d="M356,150 L361,163 L374,168 L361,173 L356,186 L351,173 L338,168 L351,163 Z" fill="#C9922E"/>
+  <path id="ch-spark-2" d="M170,150 L173,159 L182,162 L173,165 L170,174 L167,165 L158,162 L167,159 Z" fill="#C9922E"/>
+
+  <style>
+    #ch-heart{ transform-origin:256px 294px; animation: ch-beat 1.8s ease-in-out infinite; }
+    #ch-spark-1{ transform-origin:356px 168px; animation: ch-twinkle 1.6s ease-in-out infinite; }
+    #ch-spark-2{ transform-origin:170px 162px; animation: ch-twinkle 1.6s ease-in-out infinite .5s; }
+    @keyframes ch-beat{
+      0%,100%{ transform:scale(1); }
+      25%{ transform:scale(1.12); }
+      40%{ transform:scale(0.97); }
+      55%{ transform:scale(1.06); }
+    }
+    @keyframes ch-twinkle{
+      0%,100%{ transform:scale(0.6) rotate(0deg); opacity:.35; }
+      50%{ transform:scale(1.15) rotate(15deg); opacity:1; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #ch-heart,#ch-spark-1,#ch-spark-2{ animation:none; }
+    }
+  </style>
+</svg>

@@ -1,0 +1,122 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="r2Bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3EAD6"/>
+      <stop offset="100%" stop-color="#E9DCBB"/>
+    </linearGradient>
+    <radialGradient id="r2Glow" cx="50%" cy="38%" r="55%">
+      <stop offset="0%" stop-color="#F3C878" stop-opacity=".95"/>
+      <stop offset="100%" stop-color="#F3C878" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="r2Skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#EFC49A"/>
+      <stop offset="100%" stop-color="#E0AC79"/>
+    </linearGradient>
+    <linearGradient id="r2Hair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5A3C24"/>
+      <stop offset="100%" stop-color="#42291A"/>
+    </linearGradient>
+    <linearGradient id="r2Robe" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F6EEDA"/>
+      <stop offset="100%" stop-color="#E7D8B4"/>
+    </linearGradient>
+    <clipPath id="r2Squircle">
+      <rect x="0" y="0" width="512" height="512" rx="114" ry="114"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" fill="url(#r2Bg)" clip-path="url(#r2Squircle)"/>
+
+  <g clip-path="url(#r2Squircle)">
+    <!-- aureola: rotating rays + pulsing glow behind the head -->
+    <g id="r2-rays" style="transform-origin:256px 220px" opacity=".55">
+      <g fill="var(--brand-primary, #C9922E)">
+        <path d="M256,70 L262,132 L250,132 Z"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(45 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(90 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(135 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(180 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(225 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(270 256 220)"/>
+        <path d="M256,70 L262,132 L250,132 Z" transform="rotate(315 256 220)"/>
+      </g>
+    </g>
+    <circle id="r2-glow" cx="256" cy="220" r="118" fill="url(#r2Glow)"/>
+
+    <!-- robe -->
+    <path d="M150,470 C150,380 190,346 256,346 C322,346 362,380 362,470 Z" fill="url(#r2Robe)"/>
+    <path d="M212,346 C224,368 288,368 300,346" fill="none" stroke="var(--brand-detail, #B5502E)" stroke-width="8" stroke-linecap="round"/>
+
+    <!-- neck -->
+    <rect x="234" y="298" width="44" height="44" rx="12" fill="url(#r2Skin)"/>
+
+    <!-- hair, behind the face, flowing to the shoulders -->
+    <path d="M256,110
+             C196,110 156,152 152,206
+             C149,244 156,286 172,326
+             C176,296 182,268 182,240
+             C182,268 178,300 186,332
+             L206,332
+             C198,296 196,258 200,226
+             C200,264 206,300 218,330
+             L238,330
+             C228,286 224,240 232,204
+             C238,240 244,278 252,326
+             C260,278 266,240 272,204
+             C280,240 276,286 266,330
+             L286,330
+             C298,300 296,264 296,226
+             C300,258 298,296 290,332
+             L310,332
+             C318,300 314,268 314,240
+             C314,268 320,296 324,326
+             C340,286 347,244 344,206
+             C340,152 300,110 256,110 Z"
+          fill="url(#r2Hair)"/>
+
+    <!-- face -->
+    <ellipse cx="256" cy="242" rx="86" ry="96" fill="url(#r2Skin)"/>
+
+    <!-- hair front: center part + fringe -->
+    <path d="M182,214 C196,158 224,132 256,132 C288,132 316,158 330,214
+             C312,192 288,178 256,178 C224,178 200,192 182,214 Z"
+          fill="url(#r2Hair)"/>
+
+    <!-- beard + mustache -->
+    <path d="M186,258
+             C184,300 202,338 230,354
+             C222,338 218,318 220,300
+             C226,320 238,334 256,338
+             C274,334 286,320 292,300
+             C294,318 290,338 282,354
+             C310,338 328,300 326,258
+             C312,286 292,304 256,306
+             C220,304 200,286 186,258 Z"
+          fill="url(#r2Hair)"/>
+    <path d="M222,268 C234,278 278,278 290,268 C282,282 268,290 256,290 C244,290 230,282 222,268 Z" fill="url(#r2Hair)"/>
+
+    <!-- eyebrows -->
+    <path d="M206,222 Q222,210 240,220" fill="none" stroke="#42291A" stroke-width="6" stroke-linecap="round"/>
+    <path d="M272,220 Q290,210 306,222" fill="none" stroke="#42291A" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- eyes: peaceful, closed -->
+    <path d="M212,244 Q224,250 238,244" fill="none" stroke="#3A2A1E" stroke-width="5" stroke-linecap="round"/>
+    <path d="M274,244 Q288,250 300,244" fill="none" stroke="#3A2A1E" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- nose -->
+    <path d="M250,232 C246,248 244,258 252,264" fill="none" stroke="#C98A55" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <style>
+    #r2-rays{ animation: r2-spin 32s linear infinite; }
+    #r2-glow{ transform-origin:256px 220px; animation: r2-breathe 3.6s ease-in-out infinite; }
+    @keyframes r2-spin{ from{ transform:rotate(0deg);} to{ transform:rotate(360deg);} }
+    @keyframes r2-breathe{
+      0%,100%{ transform:scale(1); opacity:1; }
+      50%{ transform:scale(1.1); opacity:.7; }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #r2-rays,#r2-glow{ animation:none; }
+    }
+  </style>
+</svg>

@@ -1,0 +1,77 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="rBg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F3EAD6"/>
+      <stop offset="100%" stop-color="#EADFC3"/>
+    </linearGradient>
+    <radialGradient id="rHalo" cx="50%" cy="42%" r="55%">
+      <stop offset="0%" stop-color="#F6D9A0" stop-opacity=".9"/>
+      <stop offset="100%" stop-color="#F6D9A0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rSkin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#F2C99A"/>
+      <stop offset="100%" stop-color="#E7B37F"/>
+    </linearGradient>
+    <linearGradient id="rHair" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#8A5A34"/>
+      <stop offset="100%" stop-color="#6B4325"/>
+    </linearGradient>
+    <clipPath id="rSquircle">
+      <rect x="0" y="0" width="512" height="512" rx="114" ry="114"/>
+    </clipPath>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" fill="url(#rBg)" clip-path="url(#rSquircle)"/>
+
+  <g clip-path="url(#rSquircle)">
+    <!-- soft halo, breathes -->
+    <circle id="r-halo" cx="256" cy="220" r="150" fill="url(#rHalo)"/>
+
+    <!-- collar / robe -->
+    <path d="M170,430 C170,370 210,352 256,352 C302,352 342,370 342,430 L342,470 L170,470 Z" fill="var(--brand-secondary, #4E6B49)"/>
+    <path d="M226,352 L256,392 L286,352" fill="none" stroke="#F3EAD6" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/>
+
+    <!-- neck -->
+    <rect x="234" y="322" width="44" height="46" rx="14" fill="url(#rSkin)"/>
+
+    <!-- face -->
+    <circle cx="256" cy="240" r="104" fill="url(#rSkin)"/>
+
+    <!-- hair -->
+    <path d="M152,232 C146,150 196,112 256,112 C316,112 366,150 360,232 C348,196 320,214 314,182 C300,206 268,158 246,182 C224,158 196,206 178,188 C168,206 160,206 152,232 Z" fill="url(#rHair)"/>
+    <path d="M150,236 C142,268 148,296 168,314" fill="none" stroke="url(#rHair)" stroke-width="26" stroke-linecap="round"/>
+    <path d="M362,236 C370,268 364,296 344,314" fill="none" stroke="url(#rHair)" stroke-width="26" stroke-linecap="round"/>
+
+    <!-- eyebrows -->
+    <path d="M212,222 Q226,212 240,220" fill="none" stroke="#6B4325" stroke-width="6" stroke-linecap="round"/>
+    <path d="M272,220 Q286,212 300,222" fill="none" stroke="#6B4325" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- eyes, blink -->
+    <g id="r-eyes" style="transform-origin:256px 244px">
+      <ellipse cx="224" cy="244" rx="9" ry="11" fill="#3A2A1E"/>
+      <ellipse cx="288" cy="244" rx="9" ry="11" fill="#3A2A1E"/>
+    </g>
+
+    <!-- nose -->
+    <path d="M252,244 C248,258 246,266 254,270" fill="none" stroke="#C98A55" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- gentle smile -->
+    <path d="M228,284 Q256,300 284,284" fill="none" stroke="#8A4B3A" stroke-width="6" stroke-linecap="round"/>
+  </g>
+
+  <style>
+    #r-halo{ transform-origin:256px 220px; animation: r-breathe 3.2s ease-in-out infinite; }
+    #r-eyes{ animation: r-blink 4.2s ease-in-out infinite; }
+    @keyframes r-breathe{
+      0%,100%{ transform:scale(1); opacity:1; }
+      50%{ transform:scale(1.08); opacity:.75; }
+    }
+    @keyframes r-blink{
+      0%, 92%, 100%{ transform:scaleY(1); }
+      95%{ transform:scaleY(0.12); }
+    }
+    @media (prefers-reduced-motion: reduce){
+      #r-halo,#r-eyes{ animation:none; }
+    }
+  </style>
+</svg>

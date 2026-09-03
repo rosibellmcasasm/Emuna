@@ -1,0 +1,154 @@
+@import "tailwindcss";
+
+/* ============================================================
+   EMUNÁ — Design tokens (FICHA-ARTE.md, aprobado 2026-09-02)
+   Personalidad: "cuaderno de campo de explorador" — cálida, aventurera.
+   Modo: claro / diurno (única variante — no hay modo oscuro en este proyecto).
+   ============================================================ */
+
+:root {
+  /* ====== SUPERFICIES ====== */
+  --surface-base: #F3EAD6;          /* crema envejecido — fondo de página */
+  --surface-primary: #FBF6EA;       /* cards, contenedores principales (más claro que el base) */
+  --surface-secondary: #ECE0C6;     /* secciones alternas, elevadas */
+  --surface-tertiary: #E4D5B0;      /* inputs, áreas recesadas */
+  --surface-elevated: #FFFDF7;      /* elementos flotantes (dropdowns, tooltips) */
+  --surface-inverse: #2E2517;       /* bloque de máximo contraste (CTA final) */
+  --surface-overlay: rgba(46, 37, 23, 0.55);
+
+  /* ====== TEXTOS ====== */
+  --text-primary: #362B18;          /* casi-negro con tinte cálido */
+  --text-secondary: #6B5A3C;
+  --text-tertiary: #93815F;
+  --text-inverse: #F3EAD6;
+  --text-link: var(--brand-primary);
+
+  /* ====== BORDES ====== */
+  --border-default: #DCCBA0;
+  --border-strong: #C7B282;
+  --border-focus: var(--brand-primary);
+
+  /* ====== MARCA ====== */
+  --brand-primary: #C9922E;             /* dorado atardecer */
+  --brand-primary-hover: #B37F22;
+  --brand-primary-soft: rgba(201, 146, 46, 0.12);
+  --brand-secondary: #4E6B49;           /* verde salvia/follaje */
+  --brand-secondary-soft: rgba(78, 107, 73, 0.12);
+  --brand-detail: #B5502E;              /* óxido-terracota — semántico puntual */
+  --brand-detail-soft: rgba(181, 80, 46, 0.12);
+
+  /* ====== SEMÁNTICOS ====== */
+  --success: #4E6B49;
+  --success-soft: rgba(78, 107, 73, 0.12);
+  --warning: #C9922E;
+  --warning-soft: rgba(201, 146, 46, 0.14);
+  --danger: #B5502E;
+  --danger-soft: rgba(181, 80, 46, 0.12);
+
+  /* ====== TIPOGRAFÍA ====== */
+  --font-display: var(--font-baloo), system-ui, sans-serif;
+  --font-body: var(--font-baloo), system-ui, sans-serif;
+
+  /* ====== RADIUS ====== */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-full: 999px;
+
+  /* ====== MOTION ====== */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@theme inline {
+  --color-surface-base: var(--surface-base);
+  --color-surface-primary: var(--surface-primary);
+  --color-surface-secondary: var(--surface-secondary);
+  --color-surface-tertiary: var(--surface-tertiary);
+  --color-surface-elevated: var(--surface-elevated);
+  --color-surface-inverse: var(--surface-inverse);
+
+  --color-txt-primary: var(--text-primary);
+  --color-txt-secondary: var(--text-secondary);
+  --color-txt-tertiary: var(--text-tertiary);
+  --color-txt-inverse: var(--text-inverse);
+
+  --color-border-default: var(--border-default);
+  --color-border-strong: var(--border-strong);
+
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-primary-hover: var(--brand-primary-hover);
+  --color-brand-primary-soft: var(--brand-primary-soft);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-secondary-soft: var(--brand-secondary-soft);
+  --color-brand-detail: var(--brand-detail);
+  --color-brand-detail-soft: var(--brand-detail-soft);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+
+  --ease-out: var(--ease-out);
+  --ease-spring: var(--ease-spring);
+}
+
+body {
+  background: var(--surface-base);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+}
+
+/* Reveal-on-scroll utilitario (sin JS pesado, respeta reduced-motion) */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 25%;
+  }
+}
+
+@keyframes reveal-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Carrusel automático de la sección 5 */
+@media (prefers-reduced-motion: no-preference) {
+  .auto-scroll-track {
+    animation: scroll-track 28s linear infinite;
+  }
+  .auto-scroll-track:hover,
+  .auto-scroll-track:active {
+    animation-play-state: paused;
+  }
+}
+
+@keyframes scroll-track {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auto-scroll-track {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+}
