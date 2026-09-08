@@ -25,7 +25,7 @@ export default function OnboardingResumen() {
 
   return (
     <main className="flex min-h-dvh flex-col bg-surface-base px-6 py-10">
-      <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col">
+      <div className="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center">
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -84,7 +84,7 @@ export default function OnboardingResumen() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-auto pt-10"
+          className="mt-9"
         >
           <button
             type="button"

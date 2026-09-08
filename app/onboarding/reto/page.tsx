@@ -38,34 +38,36 @@ export default function OnboardingReto() {
 
   return (
     <OnboardingShell progress={40} onBack={() => router.push("/onboarding/edad")}>
-      <h1
-        className="text-[28px] font-extrabold leading-[1.1] tracking-tight text-txt-primary"
-        style={{ textWrap: "balance" }}
-      >
-        ¿Qué es lo que más te cuesta?
-      </h1>
-      <p className="mt-2 text-[14.5px] text-txt-secondary">
-        Cuéntanos qué te pasa a ti, no a otro papá o mamá.
-      </p>
+      <div className="flex flex-1 flex-col justify-center">
+        <h1
+          className="text-[28px] font-extrabold leading-[1.1] tracking-tight text-txt-primary"
+          style={{ textWrap: "balance" }}
+        >
+          ¿Qué es lo que más te cuesta?
+        </h1>
+        <p className="mt-2 text-[14.5px] text-txt-secondary">
+          Cuéntanos qué te pasa a ti, no a otro papá o mamá.
+        </p>
 
-      <div className="mt-8 flex flex-col gap-3">
-        {OPCIONES.map((op) => (
-          <ChipOption
-            key={op.value}
-            label={op.label}
-            selected={selected === op.value}
-            onSelect={() => handleSelect(op.value)}
-          />
-        ))}
+        <div className="mt-8 flex flex-col gap-3">
+          {OPCIONES.map((op) => (
+            <ChipOption
+              key={op.value}
+              label={op.label}
+              selected={selected === op.value}
+              onSelect={() => handleSelect(op.value)}
+            />
+          ))}
+        </div>
+
+        <button
+          type="button"
+          onClick={() => router.push("/onboarding/reconocimiento")}
+          className="mt-6 min-h-11 text-center text-[13px] text-txt-tertiary transition hover:text-txt-secondary"
+        >
+          Saltar
+        </button>
       </div>
-
-      <button
-        type="button"
-        onClick={() => router.push("/onboarding/reconocimiento")}
-        className="mt-6 min-h-11 text-center text-[13px] text-txt-tertiary transition hover:text-txt-secondary"
-      >
-        Saltar
-      </button>
     </OnboardingShell>
   );
 }

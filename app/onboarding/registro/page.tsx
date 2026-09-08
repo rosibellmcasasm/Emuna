@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Lock, Mail } from "lucide-react";
@@ -10,6 +10,14 @@ import { createClient } from "@/lib/supabase/client";
 import { Mark } from "@/components/brand/Mark";
 import { IconChip } from "@/components/app/IconChip";
 
+// Defensa en profundidad además del rate limit propio de Supabase Auth: un
+// mismo navegador no puede pedir más de un enlace mágico cada 30s. No evita
+// un ataque distribuido (para eso está el límite del lado de Supabase), pero
+// sí el caso más común — alguien haciendo clic repetido en "Continuar" o
+// mandando spam de enlaces a un correo ajeno desde esta pantalla.
+const COOLDOWN_MS = 30_000;
+const COOLDOWN_KEY = "emuna:ultimo-envio-otp";
+
 function RegistroForm() {
   const params = useSearchParams();
   const camino = params.get("camino") === "gratis" ? "gratis" : "pago";
@@ -18,11 +26,37 @@ function RegistroForm() {
   const [enviando, setEnviando] = useState(false);
   const [enviado, setEnviado] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [segundosRestantes, setSegundosRestantes] = useState(0);
+  const intervaloRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  function iniciarCooldown() {
+    const hasta = Date.now() + COOLDOWN_MS;
+    window.localStorage.setItem(COOLDOWN_KEY, String(hasta));
+    actualizarCooldown();
+  }
+
+  function actualizarCooldown() {
+    const hasta = Number(window.localStorage.getItem(COOLDOWN_KEY) ?? 0);
+    const restante = Math.max(0, Math.ceil((hasta - Date.now()) / 1000));
+    setSegundosRestantes(restante);
+    if (restante === 0 && intervaloRef.current) {
+      clearInterval(intervaloRef.current);
+      intervaloRef.current = null;
+    }
+  }
+
+  useEffect(() => {
+    actualizarCooldown();
+    intervaloRef.current = setInterval(actualizarCooldown, 1000);
+    return () => {
+      if (intervaloRef.current) clearInterval(intervaloRef.current);
+    };
+  }, []);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!email.includes("@") || enviando) {
-      setError("Ingresa un correo válido para continuar.");
+    if (!email.includes("@") || enviando || segundosRestantes > 0) {
+      if (!email.includes("@")) setError("Ingresa un correo válido para continuar.");
       return;
     }
     setError(null);
@@ -56,6 +90,7 @@ function RegistroForm() {
       setError("No pudimos enviar el enlace. Revisa el correo o intenta de nuevo en un momento.");
       return;
     }
+    iniciarCooldown();
     setEnviado(true);
   }
 
@@ -146,10 +181,14 @@ function RegistroForm() {
 
           <button
             type="submit"
-            disabled={enviando}
+            disabled={enviando || segundosRestantes > 0}
             className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse transition active:scale-[0.97] disabled:opacity-60"
           >
-            {enviando ? "Enviando el enlace…" : "Continuar"}
+            {enviando
+              ? "Enviando el enlace…"
+              : segundosRestantes > 0
+                ? `Espera ${segundosRestantes}s para reenviar`
+                : "Continuar"}
           </button>
         </motion.form>
 

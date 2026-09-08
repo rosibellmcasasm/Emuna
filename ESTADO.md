@@ -10,10 +10,20 @@ Se corrió una auditoría de 6 dimensiones (producto, diseño, UX, backend, segu
   ahora exigen cuenta real antes de dejar jugar — evita la "celebración falsa" que no se guardaba).
   Verificado con Playwright: dashboard pasó de 🔥0·0/52 a 🔥1·1/52 con el Caso 1 marcado; intentar
   el Caso 02 sin cuenta redirige a `/onboarding/registro?camino=gratis` en vez de dejarlo jugar.
-- Pendientes de la auditoría (no críticos, sin ejecutar todavía): rate limiting en `signInWithOtp`,
-  versionar el esquema de Supabase como migración en el repo (`supabase db diff`), documentar que
-  `compras_pendientes`/`webhook_log` son RLS-sin-políticas a propósito (solo `service_role`), pasar
-  las pantallas por el subagente `revisor-visual` real (esta auditoría se autoevaluó).
+- **Importantes — YA RESUELTOS (2026-09-08):**
+  - Rate limiting: cooldown de 30s en `app/onboarding/registro/page.tsx` (defensa en profundidad,
+    además del límite propio de Supabase Auth) — botón deshabilitado con cuenta regresiva visible.
+  - Esquema versionado: `supabase/migrations/20260908_esquema_actual_snapshot.sql` — snapshot fiel
+    de tablas, RLS, índices y el trigger `handle_new_user`, con `if not exists`/`or replace` para
+    poder reproducirlo en otro entorno.
+  - `compras_pendientes`/`webhook_log`: documentado con `comment on table` en Supabase (migración
+    `documentar_rls_solo_admin`) — RLS sin políticas es intencional, no un olvido.
+  - Vacío muerto: `edad`, `reto`, `tiempo` y `resumen` del onboarding ahora centran su contenido
+    verticalmente (antes el bloque quedaba pegado arriba con medio cuerpo vacío abajo).
+- **Pendiente real (no ejecutado):** pasar las pantallas por el subagente `revisor-visual`
+  independiente — esta auditoría se autoevaluó (Regla de Oro 7 exige el veredicto de un tercero).
+- **Pulido, sin urgencia:** grabar GIF de la celebración del Caso (el screenshot estático no la
+  muestra); `marcarCasoResuelto` hace 1 consulta extra evitable (no es N+1 real).
 - Pendientes del usuario (datos legales, sin bloquear nada): nombre legal del negocio, correo de
   soporte real, país fiscal — pendientes de que el usuario los confirme para completar
   `/privacidad`, `/terminos`, `/reembolsos`, `/contacto`.
