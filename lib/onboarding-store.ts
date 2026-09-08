@@ -175,7 +175,23 @@ export async function getProgresoState(): Promise<ProgresoState> {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) return DEFAULT_PROGRESO;
+  if (!user) {
+    // Todavía no confirmó el enlace mágico (o nunca llegó a registrarse) — pero
+    // si ya resolvió el Caso 01 sin cuenta, ESO es su progreso real hoy. Antes
+    // esta rama devolvía ceros y el dashboard mostraba "0/52" pese a que el
+    // usuario acababa de ganar su primera insignia — bug confirmado en la
+    // auditoría (ver ESTADO.md). Reflejamos el estado local en vez de borrarlo;
+    // se reconcilia con Supabase de verdad en `app/auth/callback/route.ts` en
+    // cuanto confirme el correo.
+    const onboarding = getOnboardingState();
+    if (!onboarding.caso01Completado) return DEFAULT_PROGRESO;
+    return {
+      casosResueltos: [1],
+      insignias: { 1: onboarding.insignia ?? "Investigador Jr." },
+      racha: onboarding.racha || 1,
+      ultimaFechaResuelto: hoyISO(),
+    };
+  }
 
   const [{ data: filas }, { data: perfil }] = await Promise.all([
     supabase

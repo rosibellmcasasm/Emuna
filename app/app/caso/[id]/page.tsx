@@ -84,6 +84,15 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
       }
       const [auth, progreso] = await Promise.all([getAuthState(), getProgresoState()]);
       if (cancelado) return;
+      // El Caso 01 es el único que se puede jugar sin cuenta (vive en localStorage
+      // hasta el registro). Los Casos 2+ SÍ necesitan una cuenta real: sin ella,
+      // `marcarCasoResuelto` no tiene dónde guardar el resultado y el usuario
+      // vería una celebración falsa que no persiste — se manda a crear la cuenta
+      // gratis en vez de dejarlo "resolver" un Caso que no se va a guardar.
+      if (casoId !== 1 && !auth.registrado) {
+        router.replace("/onboarding/registro?camino=gratis");
+        return;
+      }
       const dentroDelAcceso = casoId <= 4 || auth.pagado;
       if (!dentroDelAcceso) {
         router.replace("/app/paywall");

@@ -1,5 +1,22 @@
 # ESTADO — Emuná
-Última actualización: 2026-09-02 | Sesión actual: 4 (onboarding + paywall + registro construidos)
+Última actualización: 2026-09-08 | Sesión actual: 6 (Supabase/Hotmart conectados, auditoría 7.5/10)
+
+## Auditoría exhaustiva (2026-09-08) — hallazgo crítico CORREGIDO
+Se corrió una auditoría de 6 dimensiones (producto, diseño, UX, backend, seguridad, IA). Puntaje: 7.5/10.
+- **CRÍTICO (ya arreglado):** el progreso del Caso 01 resuelto sin cuenta no se reflejaba en `/app`
+  si el usuario entraba antes de confirmar el enlace mágico — `getProgresoState()` devolvía ceros
+  ignorando el estado local. Fix en `lib/onboarding-store.ts` (deriva el progreso de
+  `getOnboardingState()` cuando no hay sesión) + guard en `app/app/caso/[id]/page.tsx` (Casos 2+
+  ahora exigen cuenta real antes de dejar jugar — evita la "celebración falsa" que no se guardaba).
+  Verificado con Playwright: dashboard pasó de 🔥0·0/52 a 🔥1·1/52 con el Caso 1 marcado; intentar
+  el Caso 02 sin cuenta redirige a `/onboarding/registro?camino=gratis` en vez de dejarlo jugar.
+- Pendientes de la auditoría (no críticos, sin ejecutar todavía): rate limiting en `signInWithOtp`,
+  versionar el esquema de Supabase como migración en el repo (`supabase db diff`), documentar que
+  `compras_pendientes`/`webhook_log` son RLS-sin-políticas a propósito (solo `service_role`), pasar
+  las pantallas por el subagente `revisor-visual` real (esta auditoría se autoevaluó).
+- Pendientes del usuario (datos legales, sin bloquear nada): nombre legal del negocio, correo de
+  soporte real, país fiscal — pendientes de que el usuario los confirme para completar
+  `/privacidad`, `/terminos`, `/reembolsos`, `/contacto`.
 
 ⏸️ CHECKPOINT — Última acción completada: Sesión 4 — onboarding real (8 pantallas) + paywall +
 registro/confirmación construidos sobre Next.js App Router + Tailwind v4, reemplazando el
