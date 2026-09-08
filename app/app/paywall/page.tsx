@@ -15,6 +15,7 @@ export default function AppPaywallPage() {
   const router = useRouter();
   const [listo, setListo] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const [redirigiendo, setRedirigiendo] = useState(false);
 
   useEffect(() => {
     let cancelado = false;
@@ -34,6 +35,7 @@ export default function AppPaywallPage() {
   }, [router]);
 
   function handleDesbloquear() {
+    setRedirigiendo(true);
     const checkoutHref = hotmartCheckoutHref(email);
     if (checkoutHref) {
       window.location.href = checkoutHref;
@@ -122,9 +124,10 @@ export default function AppPaywallPage() {
           <button
             type="button"
             onClick={handleDesbloquear}
-            className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97]"
+            disabled={redirigiendo}
+            className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97] disabled:opacity-70"
           >
-            Desbloquear los 52 Casos
+            {redirigiendo ? "Un momento…" : "Desbloquear los 52 Casos"}
           </button>
         </motion.div>
 

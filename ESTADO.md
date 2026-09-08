@@ -1,6 +1,30 @@
 # ESTADO — Emuná
 Última actualización: 2026-09-08 | Sesión actual: 6 (Supabase/Hotmart conectados, auditoría 7.5/10)
 
+## Revisor-visual independiente (2026-09-08) — 4 pantallas puntuadas
+Landing 32/40·15/20·17/20 copy · Paywall 30/40·15/20·17/20 copy · Dashboard 30/40·13/20 ·
+Celebración del Caso 30/40·13/20 — las 4 "NO LISTA" (bajo el gate ≥36/40 y ≥16/20). Corregido:
+- **Bugs reales:** CTA del paywall (onboarding y app) mostraba "Un momento…" ausente al redirigir
+  sin feedback — ahora tiene estado de carga visible. Pantalla del Caso no tenía forma de salir
+  antes de terminar — ahora hay botón X en el header (oculto solo en insignia/cierre, donde ya
+  hay su propio CTA de continuar). Ícono de racha del dashboard usaba emoji 🔥 en vez del ícono
+  Flame de Lucide ya usado en el resto de la app — unificado.
+- **Hallazgo repetido en las 4 pantallas:** fondo crema plano sin la textura de "cuaderno de
+  campo" que promete FICHA-ARTE.md. Resuelto UNA vez a nivel global (`app/globals.css` → `body`):
+  grano de papel sutil (SVG feTurbulence, 3.5% opacity) + viñeta cálida con los 2 acentos de
+  marca, sin tocar el contraste del texto.
+- `MotionConfig reducedMotion="user"` agregado en `app/layout.tsx` — antes ninguna pantalla
+  respetaba `prefers-reduced-motion` pese a usarlo en toda la documentación del sistema.
+- **Pendiente (no ejecutado, menor):** agrupar la grilla de 52 Casos por módulo en vez de scroll
+  plano 1-52 (regla de listas largas); ícono "Sparkles" de la etapa conclusión no es temático
+  (cambiar por algo tipo "veredicto"); caja de feedback "Exacto" podría llevar tinte sage en vez
+  de gris neutro; radio del card hero de la landing no calza con el del CTA.
+- No se pudo generar un GIF real de la celebración: la latencia de la herramienta de captura en
+  este entorno (~1s+) es más larga que la animación completa (~1s) — probado con 3 métodos
+  distintos, los 3 capturan el estado ya asentado. La animación SÍ funciona en producción
+  (verificada con `getComputedStyle` en la auditoría anterior); se puede ver en vivo en
+  https://emuna-app.vercel.app jugando cualquier Caso.
+
 ## Auditoría exhaustiva (2026-09-08) — hallazgo crítico CORREGIDO
 Se corrió una auditoría de 6 dimensiones (producto, diseño, UX, backend, seguridad, IA). Puntaje: 7.5/10.
 - **CRÍTICO (ya arreglado):** el progreso del Caso 01 resuelto sin cuenta no se reflejaba en `/app`

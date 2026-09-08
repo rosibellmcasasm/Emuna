@@ -90,7 +90,7 @@ export default function AppDashboardPage() {
             </div>
           </div>
           <div className="flex items-center gap-1.5 rounded-full border border-border-default bg-surface-elevated px-3 py-1.5">
-            <span aria-hidden="true" className="text-[15px] leading-none">🔥</span>
+            <Flame size={15} color="var(--brand-detail)" aria-hidden="true" />
             <span className="text-[14px] font-bold tabular-nums text-txt-primary">
               {progreso.racha}
             </span>

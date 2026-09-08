@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Baloo_2 } from "next/font/google";
+import { MotionConfig } from "motion/react";
 import "./globals.css";
 
 const baloo = Baloo_2({
@@ -18,7 +19,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="es" className={`${baloo.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-surface-base text-txt-primary font-body">
-        {children}
+        {/* reducedMotion="user" respeta prefers-reduced-motion del sistema operativo en
+            TODAS las animaciones de motion/react de la app, sin tener que acordarse de
+            envolver cada pantalla — hallazgo de la auditoría visual del 2026-09-08. */}
+        <MotionConfig reducedMotion="user">{children}</MotionConfig>
       </body>
     </html>
   );

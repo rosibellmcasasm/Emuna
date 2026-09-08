@@ -194,10 +194,20 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
   return (
     <main className="flex min-h-dvh flex-col bg-surface-base px-4 py-6">
       <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-3">
           <span className="text-[11px] font-bold uppercase tracking-wide text-brand-primary">
             {caso.kicker} · {caso.titulo}
           </span>
+          {etapa !== "insignia" && etapa !== "cierre" && (
+            <button
+              type="button"
+              onClick={() => router.push("/app")}
+              aria-label="Salir del Caso"
+              className="flex size-9 shrink-0 items-center justify-center rounded-full text-txt-tertiary transition hover:bg-surface-secondary hover:text-txt-secondary active:scale-95"
+            >
+              <X size={18} aria-hidden="true" />
+            </button>
+          )}
         </div>
 
         <div className="mt-6 flex flex-1 flex-col">

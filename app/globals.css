@@ -106,7 +106,18 @@
 }
 
 body {
-  background: var(--surface-base);
+  /* Grano de papel sutil + viñeta cálida — hallazgo repetido en las 4 pantallas
+     de la auditoría visual del 2026-09-08: el fondo crema plano no transmitía
+     la personalidad de FICHA-ARTE.md ("cuaderno de campo de explorador"). Se
+     resuelve UNA vez acá, no pantalla por pantalla — cubre toda la app. Grano
+     al 3% y viñeta al 4% para que sume profundidad sin ensuciar el texto ni
+     bajar el contraste (AA sigue intacto: solo afecta al fondo, no al texto).*/
+  background-color: var(--surface-base);
+  background-image:
+    radial-gradient(120% 90% at 18% -10%, color-mix(in oklab, var(--brand-primary) 4%, transparent), transparent 60%),
+    radial-gradient(110% 90% at 100% 110%, color-mix(in oklab, var(--text-primary) 4%, transparent), transparent 55%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font-body);
 }

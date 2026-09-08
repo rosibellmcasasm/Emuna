@@ -19,6 +19,7 @@ import { hotmartCheckoutHref } from "@/lib/hotmart-config";
 export default function PaywallPage() {
   const router = useRouter();
   const [state, setState] = useState<OnboardingState | null>(null);
+  const [redirigiendo, setRedirigiendo] = useState(false);
 
   useEffect(() => {
     setState(getOnboardingState());
@@ -28,6 +29,12 @@ export default function PaywallPage() {
     // Todavía no hay cuenta en este punto — Hotmart no la necesita para
     // cobrar, el webhook conecta el pago con la cuenta por email (o la crea
     // si compra antes de registrarse, vía `compras_pendientes`).
+    // El feedback de carga es importante en los dos casos: si hay checkout
+    // real, `window.location.href` a un dominio externo puede tardar un
+    // instante en arrancar; si no lo hay, el usuario pasa a la pantalla de
+    // registro y debe sentir que el toque SÍ hizo algo, no que no pasó nada
+    // (hallazgo de la auditoría visual del 2026-09-08).
+    setRedirigiendo(true);
     const checkoutHref = hotmartCheckoutHref();
     if (checkoutHref) {
       window.location.href = checkoutHref;
@@ -120,9 +127,10 @@ export default function PaywallPage() {
           <button
             type="button"
             onClick={handleDesbloquear}
-            className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97]"
+            disabled={redirigiendo}
+            className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97] disabled:opacity-70"
           >
-            Desbloquear los 52 Casos
+            {redirigiendo ? "Un momento…" : "Desbloquear los 52 Casos"}
           </button>
         </motion.div>
 
