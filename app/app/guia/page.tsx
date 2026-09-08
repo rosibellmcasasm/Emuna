@@ -21,12 +21,20 @@ export default function GuiaPage() {
   const [progreso, setProgreso] = useState<ProgresoState | null>(null);
 
   useEffect(() => {
-    if (!tieneAccesoApp()) {
-      router.replace("/onboarding");
-      return;
-    }
-    setProgreso(getProgresoState());
-    setCarga("listo");
+    let cancelado = false;
+    (async () => {
+      if (!(await tieneAccesoApp())) {
+        router.replace("/onboarding");
+        return;
+      }
+      const progresoReal = await getProgresoState();
+      if (cancelado) return;
+      setProgreso(progresoReal);
+      setCarga("listo");
+    })();
+    return () => {
+      cancelado = true;
+    };
   }, [router]);
 
   if (carga !== "listo" || !progreso) {

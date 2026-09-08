@@ -14,7 +14,13 @@ function ConfirmacionContent() {
   const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    setEmail(getAuthState().email);
+    let cancelado = false;
+    getAuthState().then((auth) => {
+      if (!cancelado) setEmail(auth.email);
+    });
+    return () => {
+      cancelado = true;
+    };
   }, []);
 
   return (

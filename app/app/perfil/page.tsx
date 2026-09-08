@@ -24,18 +24,28 @@ export default function PerfilPage() {
   const [carga, setCarga] = useState<EstadoCarga>("cargando");
   const [progreso, setProgreso] = useState<ProgresoState | null>(null);
   const [confirmando, setConfirmando] = useState(false);
+  const [reiniciando, setReiniciando] = useState(false);
 
   useEffect(() => {
-    if (!tieneAccesoApp()) {
-      router.replace("/onboarding");
-      return;
-    }
-    setProgreso(getProgresoState());
-    setCarga("listo");
+    let cancelado = false;
+    (async () => {
+      if (!(await tieneAccesoApp())) {
+        router.replace("/onboarding");
+        return;
+      }
+      const progresoReal = await getProgresoState();
+      if (cancelado) return;
+      setProgreso(progresoReal);
+      setCarga("listo");
+    })();
+    return () => {
+      cancelado = true;
+    };
   }, [router]);
 
-  function handleReiniciar() {
-    reiniciarProgreso();
+  async function handleReiniciar() {
+    setReiniciando(true);
+    await reiniciarProgreso();
     router.push("/onboarding");
   }
 
@@ -163,14 +173,16 @@ export default function PerfilPage() {
                   <button
                     type="button"
                     onClick={handleReiniciar}
-                    className="flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-detail text-[14.5px] font-semibold text-txt-inverse transition active:scale-[0.97]"
+                    disabled={reiniciando}
+                    className="flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-detail text-[14.5px] font-semibold text-txt-inverse transition active:scale-[0.97] disabled:opacity-60"
                   >
-                    Sí, reiniciar todo
+                    {reiniciando ? "Reiniciando…" : "Sí, reiniciar todo"}
                   </button>
                   <button
                     type="button"
                     onClick={() => setConfirmando(false)}
-                    className="flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] text-[14.5px] font-medium text-txt-secondary transition active:scale-[0.97]"
+                    disabled={reiniciando}
+                    className="flex h-12 w-full items-center justify-center rounded-[var(--radius-md)] text-[14.5px] font-medium text-txt-secondary transition active:scale-[0.97] disabled:opacity-60"
                   >
                     Cancelar
                   </button>

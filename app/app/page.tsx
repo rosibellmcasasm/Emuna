@@ -14,8 +14,8 @@ import {
   getProgresoState,
   getAuthState,
   tieneAccesoApp,
-  casoDesbloqueado,
-  getRepasoDelDia,
+  casoDesbloqueadoSync,
+  getRepasoDelDiaSync,
   type ProgresoState,
 } from "@/lib/onboarding-store";
 import { CASOS_COMPLETOS, CASOS_STUB, TOTAL_CASOS, getCasoTitulo, getCasoKicker } from "@/lib/casos";
@@ -37,13 +37,21 @@ export default function AppDashboardPage() {
   const [pagado, setPagado] = useState(false);
 
   useEffect(() => {
-    if (!tieneAccesoApp()) {
-      router.replace("/onboarding");
-      return;
-    }
-    setProgreso(getProgresoState());
-    setPagado(getAuthState().camino === "pago");
-    setCarga("listo");
+    let cancelado = false;
+    (async () => {
+      if (!(await tieneAccesoApp())) {
+        router.replace("/onboarding");
+        return;
+      }
+      const [progresoReal, auth] = await Promise.all([getProgresoState(), getAuthState()]);
+      if (cancelado) return;
+      setProgreso(progresoReal);
+      setPagado(auth.pagado);
+      setCarga("listo");
+    })();
+    return () => {
+      cancelado = true;
+    };
   }, [router]);
 
   if (carga !== "listo" || !progreso) {
@@ -64,7 +72,7 @@ export default function AppDashboardPage() {
 
   const siguienteEsCompleto = siguienteCasoId <= CASOS_COMPLETOS.length;
 
-  const repasoId = getRepasoDelDia();
+  const repasoId = getRepasoDelDiaSync(progreso);
   const repaso = repasoId ? CASOS_EXTRA[repasoId] : null;
 
   return (
@@ -151,7 +159,7 @@ export default function AppDashboardPage() {
             // o (b) sí tienes acceso pero te falta resolver el Caso anterior en orden.
             // Solo (a) manda al paywall — (b) no es clicable, solo informa el orden.
             const dentroDelAcceso = id <= 4 || pagado;
-            const desbloqueado = casoDesbloqueado(id);
+            const desbloqueado = casoDesbloqueadoSync(id, progreso, pagado);
             const bloqueadoPorOrden = dentroDelAcceso && !desbloqueado;
             const tileClass = `relative flex aspect-square flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] border text-center transition active:scale-[0.95] ${
               resuelto

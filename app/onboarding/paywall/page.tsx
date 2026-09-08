@@ -14,6 +14,7 @@ import {
   TIEMPO_LABEL,
   type OnboardingState,
 } from "@/lib/onboarding-store";
+import { hotmartCheckoutHref } from "@/lib/hotmart-config";
 
 export default function PaywallPage() {
   const router = useRouter();
@@ -22,6 +23,18 @@ export default function PaywallPage() {
   useEffect(() => {
     setState(getOnboardingState());
   }, []);
+
+  function handleDesbloquear() {
+    // Todavía no hay cuenta en este punto — Hotmart no la necesita para
+    // cobrar, el webhook conecta el pago con la cuenta por email (o la crea
+    // si compra antes de registrarse, vía `compras_pendientes`).
+    const checkoutHref = hotmartCheckoutHref();
+    if (checkoutHref) {
+      window.location.href = checkoutHref;
+      return;
+    }
+    router.push("/onboarding/registro?camino=pago");
+  }
 
   const edadLabel = state?.edad ? EDAD_LABEL[state.edad] : null;
   const tiempoLabel = state?.tiempo ? TIEMPO_LABEL[state.tiempo] : null;
@@ -106,7 +119,7 @@ export default function PaywallPage() {
         >
           <button
             type="button"
-            onClick={() => router.push("/onboarding/registro?camino=pago")}
+            onClick={handleDesbloquear}
             className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97]"
           >
             Desbloquear los 52 Casos

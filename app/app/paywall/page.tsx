@@ -8,19 +8,41 @@ import { motion } from "motion/react";
 import { IconChip } from "@/components/app/IconChip";
 import { PaywallStack, TOTAL_STACK } from "@/components/app/PaywallStack";
 import { Mark } from "@/components/brand/Mark";
-import { tieneAccesoApp } from "@/lib/onboarding-store";
+import { tieneAccesoApp, getAuthState } from "@/lib/onboarding-store";
+import { hotmartCheckoutHref } from "@/lib/hotmart-config";
 
 export default function AppPaywallPage() {
   const router = useRouter();
   const [listo, setListo] = useState(false);
+  const [email, setEmail] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!tieneAccesoApp()) {
-      router.replace("/onboarding");
+    let cancelado = false;
+    (async () => {
+      if (!(await tieneAccesoApp())) {
+        router.replace("/onboarding");
+        return;
+      }
+      const auth = await getAuthState();
+      if (cancelado) return;
+      setEmail(auth.email);
+      setListo(true);
+    })();
+    return () => {
+      cancelado = true;
+    };
+  }, [router]);
+
+  function handleDesbloquear() {
+    const checkoutHref = hotmartCheckoutHref(email);
+    if (checkoutHref) {
+      window.location.href = checkoutHref;
       return;
     }
-    setListo(true);
-  }, [router]);
+    // El checkout de Hotmart todavía no está conectado (ver ESTADO.md) — llevamos
+    // a una pantalla honesta en vez de un link falso.
+    router.push("/onboarding/confirmacion?camino=pago");
+  }
 
   if (!listo) {
     return (
@@ -99,7 +121,7 @@ export default function AppPaywallPage() {
         >
           <button
             type="button"
-            onClick={() => router.push("/onboarding/registro?camino=pago")}
+            onClick={handleDesbloquear}
             className="flex h-14 w-full items-center justify-center rounded-[var(--radius-md)] bg-brand-primary text-[16px] font-semibold text-txt-inverse shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_20%,transparent)] transition active:scale-[0.97]"
           >
             Desbloquear los 52 Casos

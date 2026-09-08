@@ -9,8 +9,9 @@ import { Mark, AnimatedMark } from "@/components/brand/Mark";
 import { BottomNav } from "@/components/app/BottomNav";
 import {
   tieneAccesoApp,
-  casoDesbloqueado,
+  casoDesbloqueadoSync,
   getAuthState,
+  getProgresoState,
   marcarCasoResuelto,
 } from "@/lib/onboarding-store";
 import { getCasoCompleto, getCasoStub, type TipoPista } from "@/lib/casos";
@@ -71,27 +72,34 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
   const [mostrarTexto, setMostrarTexto] = useState(false);
 
   useEffect(() => {
-    if (!Number.isFinite(casoId) || casoId < 1 || casoId > 52) {
-      router.replace("/app");
-      return;
-    }
-    if (!tieneAccesoApp()) {
-      router.replace("/onboarding");
-      return;
-    }
-    const pagado = getAuthState().camino === "pago";
-    const dentroDelAcceso = casoId <= 4 || pagado;
-    if (!dentroDelAcceso) {
-      router.replace("/app/paywall");
-      return;
-    }
-    if (!casoDesbloqueado(casoId)) {
-      // Tiene acceso a este Caso, pero todavía no resolvió el anterior en orden.
-      router.replace("/app");
-      return;
-    }
-    setPermitido(true);
-    setCarga("listo");
+    let cancelado = false;
+    (async () => {
+      if (!Number.isFinite(casoId) || casoId < 1 || casoId > 52) {
+        router.replace("/app");
+        return;
+      }
+      if (!(await tieneAccesoApp())) {
+        router.replace("/onboarding");
+        return;
+      }
+      const [auth, progreso] = await Promise.all([getAuthState(), getProgresoState()]);
+      if (cancelado) return;
+      const dentroDelAcceso = casoId <= 4 || auth.pagado;
+      if (!dentroDelAcceso) {
+        router.replace("/app/paywall");
+        return;
+      }
+      if (!casoDesbloqueadoSync(casoId, progreso, auth.pagado)) {
+        // Tiene acceso a este Caso, pero todavía no resolvió el anterior en orden.
+        router.replace("/app");
+        return;
+      }
+      setPermitido(true);
+      setCarga("listo");
+    })();
+    return () => {
+      cancelado = true;
+    };
   }, [casoId, router]);
 
   if (carga !== "listo" || !permitido) {
@@ -162,7 +170,7 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
     if (!caso) return;
     const opcion = caso.opciones.find((o) => o.id === respuesta);
     if (opcion?.correcta) {
-      marcarCasoResuelto(caso.id, caso.insignia);
+      void marcarCasoResuelto(caso.id, caso.insignia);
       setEtapa("insignia");
     } else {
       setMostrarFeedback(false);
