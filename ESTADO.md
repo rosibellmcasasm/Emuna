@@ -15,10 +15,16 @@ Celebración del Caso 30/40·13/20 — las 4 "NO LISTA" (bajo el gate ≥36/40 y
   marca, sin tocar el contraste del texto.
 - `MotionConfig reducedMotion="user"` agregado en `app/layout.tsx` — antes ninguna pantalla
   respetaba `prefers-reduced-motion` pese a usarlo en toda la documentación del sistema.
-- **Pendiente (no ejecutado, menor):** agrupar la grilla de 52 Casos por módulo en vez de scroll
-  plano 1-52 (regla de listas largas); ícono "Sparkles" de la etapa conclusión no es temático
-  (cambiar por algo tipo "veredicto"); caja de feedback "Exacto" podría llevar tinte sage en vez
-  de gris neutro; radio del card hero de la landing no calza con el del CTA.
+- **Pulido pendiente — YA RESUELTO (2026-09-09):** la grilla de 52 Casos en `/app` ahora se agrupa
+  en 13 "Módulo N" (4 Casos c/u, contador de resueltos por módulo) en vez de scroll plano 1-52
+  (`CasoTile` extraído como componente propio en `app/app/page.tsx`). El ícono "Sparkles" genérico
+  de la etapa conclusión del Caso se reemplazó por `Gavel` (temático de "veredicto/expediente").
+  La caja de feedback "Exacto" ahora usa `bg-brand-secondary-soft` (tinte sage) en vez de gris
+  neutro, coherente con el borde verde de la opción correcta seleccionada. El card hero de la
+  landing usaba `rounded-[28px]` hardcodeado — ahora usa el token `var(--radius-xl)` (mismo
+  valor, ahora trazable). Verificado con Playwright a 375px: grid de 13 módulos, ícono Gavel en
+  la conclusión del Caso 01, tinte sage del feedback "Exacto" — sin errores de consola, `tsc`/
+  `build` limpios.
 - No se pudo generar un GIF real de la celebración: la latencia de la herramienta de captura en
   este entorno (~1s+) es más larga que la animación completa (~1s) — probado con 3 métodos
   distintos, los 3 capturan el estado ya asentado. La animación SÍ funciona en producción

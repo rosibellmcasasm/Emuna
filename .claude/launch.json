@@ -6,6 +6,12 @@
       "runtimeExecutable": "npx",
       "runtimeArgs": ["--yes", "serve", "public", "-l", "4321"],
       "port": 4321
+    },
+    {
+      "name": "emuna-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev", "--", "-p", "3050"],
+      "port": 3050
     }
   ]
 }

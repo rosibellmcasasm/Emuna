@@ -2,7 +2,7 @@
 
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Search, Brain, FlaskConical, Landmark, FileSearch, HeartHandshake, Sparkles, Award, Check, X, Hammer, BookOpen, NotebookPen, ClipboardCheck } from "lucide-react";
+import { Search, Brain, FlaskConical, Landmark, FileSearch, HeartHandshake, Gavel, Award, Check, X, Hammer, BookOpen, NotebookPen, ClipboardCheck } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { IconChip } from "@/components/app/IconChip";
 import { Mark, AnimatedMark } from "@/components/brand/Mark";
@@ -332,7 +332,7 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
                 className="flex flex-1 flex-col"
               >
                 <IconChip tone="gold" size={56}>
-                  <Sparkles size={26} color="var(--brand-primary)" aria-hidden="true" />
+                  <Gavel size={26} color="var(--brand-primary)" aria-hidden="true" />
                 </IconChip>
                 <h1 className="mt-5 text-[24px] font-extrabold leading-snug text-txt-primary">
                   {caso.preguntaConclusion}
@@ -403,7 +403,9 @@ export default function CasoPage({ params }: { params: Promise<{ id: string }> }
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0 }}
                       transition={{ duration: 0.25 }}
-                      className="mt-5 rounded-[var(--radius-md)] bg-surface-secondary p-4"
+                      className={`mt-5 rounded-[var(--radius-md)] p-4 ${
+                        opcionSeleccionada?.correcta ? "bg-brand-secondary-soft" : "bg-surface-secondary"
+                      }`}
                     >
                       {opcionSeleccionada?.correcta ? (
                         <p className="text-[15px] leading-relaxed text-txt-primary">

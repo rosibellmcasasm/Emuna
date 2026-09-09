@@ -150,7 +150,7 @@ export default function Home() {
             </div>
 
             <div className="mt-10 md:mt-0">
-              <div className="mx-auto flex max-w-[320px] justify-center rounded-[28px] border border-border-default bg-surface-primary p-6 shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_15%,transparent)]">
+              <div className="mx-auto flex max-w-[320px] justify-center rounded-[var(--radius-xl)] border border-border-default bg-surface-primary p-6 shadow-[0_8px_30px_color-mix(in_oklab,var(--brand-primary)_15%,transparent)]">
                 <div className="flex w-full flex-col gap-4">
                   <div className="flex items-center gap-3">
                     <IconChip tone="gold">

@@ -23,11 +23,76 @@ import { CASOS_EXTRA } from "@/lib/casos-extra";
 
 type EstadoCarga = "cargando" | "sin-acceso" | "listo";
 
+const CASOS_POR_MODULO = 4;
+
 function saludoDelDia(): string {
   const hora = new Date().getHours();
   if (hora < 12) return "Buenos días";
   if (hora < 19) return "Buenas tardes";
   return "Buenas noches";
+}
+
+function CasoTile({
+  id,
+  progreso,
+  pagado,
+}: {
+  id: number;
+  progreso: ProgresoState;
+  pagado: boolean;
+}) {
+  const resuelto = progreso.casosResueltos.includes(id);
+  // Dos motivos de bloqueo distintos: (a) todavía no pagaste los Casos 5-52,
+  // o (b) sí tienes acceso pero te falta resolver el Caso anterior en orden.
+  // Solo (a) manda al paywall — (b) no es clicable, solo informa el orden.
+  const dentroDelAcceso = id <= 4 || pagado;
+  const desbloqueado = casoDesbloqueadoSync(id, progreso, pagado);
+  const bloqueadoPorOrden = dentroDelAcceso && !desbloqueado;
+  const tileClass = `relative flex aspect-square flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] border text-center transition active:scale-[0.95] ${
+    resuelto
+      ? "border-brand-secondary bg-brand-secondary-soft"
+      : desbloqueado
+        ? "border-border-default bg-surface-elevated"
+        : "border-border-default bg-surface-secondary"
+  }`;
+  const contenido = (
+    <>
+      {resuelto ? (
+        <Check size={16} strokeWidth={3} color="var(--brand-secondary)" aria-hidden="true" />
+      ) : !desbloqueado ? (
+        <Lock size={14} color="var(--text-tertiary)" aria-hidden="true" />
+      ) : null}
+      <span
+        className={`text-[13px] font-bold tabular-nums ${
+          resuelto ? "text-brand-secondary" : desbloqueado ? "text-txt-primary" : "text-txt-tertiary"
+        }`}
+      >
+        {id}
+      </span>
+    </>
+  );
+
+  if (bloqueadoPorOrden) {
+    return (
+      <div
+        className={`${tileClass} cursor-default opacity-60`}
+        aria-label={`Caso ${id} — resuelve el Caso ${id - 1} primero para desbloquearlo`}
+        title={`Resuelve el Caso ${id - 1} primero`}
+      >
+        {contenido}
+      </div>
+    );
+  }
+
+  return (
+    <Link
+      href={desbloqueado ? `/app/caso/${id}` : "/app/paywall"}
+      className={tileClass}
+      aria-label={`Caso ${id}${resuelto ? " — resuelto" : desbloqueado ? " — disponible" : " — bloqueado, requiere desbloquear los 52 Casos"}`}
+    >
+      {contenido}
+    </Link>
+  );
 }
 
 export default function AppDashboardPage() {
@@ -144,7 +209,9 @@ export default function AppDashboardPage() {
           )}
         </RevealGroup>
 
-        {/* Grid de los 52 Casos */}
+        {/* Grid de los 52 Casos, agrupados de a 4 por módulo — una lista plana de
+            52 tiles sin agrupar era difícil de escanear (regla de listas largas,
+            hallazgo del revisor visual del 2026-09-08). */}
         <div className="mt-8 flex items-center justify-between">
           <h2 className="text-[15px] font-bold text-txt-primary">Todos los Casos</h2>
           <span className="text-[12.5px] tabular-nums text-txt-tertiary">
@@ -152,67 +219,39 @@ export default function AppDashboardPage() {
           </span>
         </div>
 
-        <div className="mt-3 grid grid-cols-4 gap-2.5">
-          {Array.from({ length: TOTAL_CASOS }, (_, i) => i + 1).map((id) => {
-            const resuelto = progreso.casosResueltos.includes(id);
-            // Dos motivos de bloqueo distintos: (a) todavía no pagaste los Casos 5-52,
-            // o (b) sí tienes acceso pero te falta resolver el Caso anterior en orden.
-            // Solo (a) manda al paywall — (b) no es clicable, solo informa el orden.
-            const dentroDelAcceso = id <= 4 || pagado;
-            const desbloqueado = casoDesbloqueadoSync(id, progreso, pagado);
-            const bloqueadoPorOrden = dentroDelAcceso && !desbloqueado;
-            const tileClass = `relative flex aspect-square flex-col items-center justify-center gap-1 rounded-[var(--radius-md)] border text-center transition active:scale-[0.95] ${
-              resuelto
-                ? "border-brand-secondary bg-brand-secondary-soft"
-                : desbloqueado
-                  ? "border-border-default bg-surface-elevated"
-                  : "border-border-default bg-surface-secondary"
-            }`;
-            const contenido = (
-              <>
-                {resuelto ? (
-                  <Check size={16} strokeWidth={3} color="var(--brand-secondary)" aria-hidden="true" />
-                ) : !desbloqueado ? (
-                  <Lock size={14} color="var(--text-tertiary)" aria-hidden="true" />
-                ) : null}
-                <span
-                  className={`text-[13px] font-bold tabular-nums ${
-                    resuelto
-                      ? "text-brand-secondary"
-                      : desbloqueado
-                        ? "text-txt-primary"
-                        : "text-txt-tertiary"
-                  }`}
-                >
-                  {id}
-                </span>
-              </>
-            );
+        <div className="mt-3 flex flex-col gap-5">
+          {Array.from({ length: Math.ceil(TOTAL_CASOS / CASOS_POR_MODULO) }, (_, m) => m + 1).map(
+            (modulo) => {
+              const inicio = (modulo - 1) * CASOS_POR_MODULO + 1;
+              const fin = Math.min(modulo * CASOS_POR_MODULO, TOTAL_CASOS);
+              const idsDelModulo = Array.from({ length: fin - inicio + 1 }, (_, i) => inicio + i);
+              const resueltosDelModulo = idsDelModulo.filter((id) =>
+                progreso.casosResueltos.includes(id)
+              ).length;
+              const moduloGratis = fin <= 4;
 
-            if (bloqueadoPorOrden) {
               return (
-                <div
-                  key={id}
-                  className={`${tileClass} cursor-default opacity-60`}
-                  aria-label={`Caso ${id} — resuelve el Caso ${id - 1} primero para desbloquearlo`}
-                  title={`Resuelve el Caso ${id - 1} primero`}
-                >
-                  {contenido}
+                <div key={modulo}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[12px] font-bold uppercase tracking-wide text-txt-tertiary">
+                      Módulo {modulo}
+                      {moduloGratis && (
+                        <span className="ml-1.5 text-brand-secondary">· gratis</span>
+                      )}
+                    </span>
+                    <span className="text-[11.5px] tabular-nums text-txt-tertiary">
+                      {resueltosDelModulo}/{idsDelModulo.length}
+                    </span>
+                  </div>
+                  <div className="mt-2 grid grid-cols-4 gap-2.5">
+                    {idsDelModulo.map((id) => (
+                      <CasoTile key={id} id={id} progreso={progreso} pagado={pagado} />
+                    ))}
+                  </div>
                 </div>
               );
             }
-
-            return (
-              <Link
-                key={id}
-                href={desbloqueado ? `/app/caso/${id}` : "/app/paywall"}
-                className={tileClass}
-                aria-label={`Caso ${id}${resuelto ? " — resuelto" : desbloqueado ? " — disponible" : " — bloqueado, requiere desbloquear los 52 Casos"}`}
-              >
-                {contenido}
-              </Link>
-            );
-          })}
+          )}
         </div>
 
         {!pagado && (
